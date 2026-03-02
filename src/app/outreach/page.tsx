@@ -34,14 +34,14 @@ export default function OutreachPage() {
   const leadsByStage = (stage: PipelineStage) => outreachLeads.filter(l => l.stage === stage)
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       <Navbar />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
-        <div className="flex items-center justify-between mb-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+        <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Automated Outreach Engine</h1>
-            <p className="text-sm text-gray-500 mt-1">Skip trace, sequence, and track owner outreach — all automated.</p>
+            <h1 className="text-2xl font-semibold text-gray-900 tracking-tight">Automated Outreach Engine</h1>
+            <p className="text-sm text-gray-400 mt-1">Skip trace, sequence, and track owner outreach — all automated.</p>
           </div>
           <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-0.5">
             <button onClick={() => setView("pipeline")} className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${view === "pipeline" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"}`}>Pipeline</button>
@@ -59,7 +59,7 @@ export default function OutreachPage() {
             { label: "Meetings Set", value: outreachStats.meetingsSet.toString(), icon: Calendar, color: "text-blue-500" },
             { label: "Sequences Active", value: outreachStats.sequencesActive.toString(), icon: Send, color: "text-orange-500" },
           ].map(s => (
-            <div key={s.label} className="bg-white border border-gray-200 rounded-xl p-3 shadow-sm">
+            <div key={s.label} className="bg-gray-50/80 border border-gray-100 rounded-xl p-3">
               <div className="flex items-center gap-1.5 mb-1">
                 <s.icon className={`w-3.5 h-3.5 ${s.color}`} />
                 <span className="text-[10px] text-gray-400 uppercase tracking-wider">{s.label}</span>

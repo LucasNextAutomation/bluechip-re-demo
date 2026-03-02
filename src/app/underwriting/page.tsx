@@ -55,14 +55,14 @@ export default function UnderwritingPage() {
   }, [stage])
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       <Navbar />
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6">
-        <div className="flex items-center justify-between mb-6">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+        <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">AI Underwriting Assistant</h1>
-            <p className="text-sm text-gray-500 mt-1">Upload an offering memorandum. AI extracts data and populates your model.</p>
+            <h1 className="text-2xl font-semibold text-gray-900 tracking-tight">AI Underwriting Assistant</h1>
+            <p className="text-sm text-gray-400 mt-1">Upload an offering memorandum. AI extracts data and populates your model.</p>
           </div>
           {stage !== "upload" && (
             <button

@@ -60,15 +60,15 @@ export default function DealFinderPage() {
   const counties = [...new Set(mockDeals.map(d => d.county))]
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       <Navbar />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         {/* Top Bar */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Off-Market Deal Finder</h1>
-            <p className="text-sm text-gray-500 flex items-center gap-2 mt-1">
+            <h1 className="text-2xl font-semibold text-gray-900 tracking-tight">Off-Market Deal Finder</h1>
+            <p className="text-sm text-gray-400 flex items-center gap-2 mt-1">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               {dashboardStats.sourcesActive} data sources active — Last scan: {new Date(dashboardStats.lastScanTime).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
               <span className="text-gray-300">|</span>
@@ -77,7 +77,7 @@ export default function DealFinderPage() {
           </div>
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${showFilters ? "bg-[#0049B8] text-white" : "bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"}`}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${showFilters ? "bg-gray-900 text-white" : "border border-gray-200 text-gray-500 hover:bg-gray-50"}`}
           >
             <SlidersHorizontal className="w-4 h-4" /> Filters
           </button>
@@ -137,7 +137,7 @@ export default function DealFinderPage() {
             { label: "Total Units", value: dashboardStats.totalUnits.toString(), sub: "Across 6 counties", icon: Building2, color: "text-purple-500" },
             { label: "Avg Cap Rate", value: `${dashboardStats.avgCapRate}%`, sub: "All deals", icon: TrendingUp, color: "text-emerald-500" },
           ].map(s => (
-            <div key={s.label} className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
+            <div key={s.label} className="bg-gray-50/80 border border-gray-100 rounded-xl p-4">
               <div className="flex items-center gap-2 mb-2">
                 <s.icon className={`w-4 h-4 ${s.color}`} />
                 <span className="text-[10px] text-gray-400 uppercase tracking-wider">{s.label}</span>
@@ -174,7 +174,7 @@ export default function DealFinderPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.03 * index }}
                 onClick={() => setSelectedDeal(deal)}
-                className="group bg-white hover:bg-gray-50 border border-gray-200 hover:border-[#0049B8]/30 rounded-xl p-4 cursor-pointer transition-all shadow-sm hover:shadow-md"
+                className="group bg-white border border-gray-200 hover:border-gray-300 rounded-xl p-4 cursor-pointer transition-all hover:shadow-md"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1 min-w-0">
@@ -222,7 +222,7 @@ export default function DealFinderPage() {
           {/* Sidebar */}
           <div className="space-y-4 lg:sticky lg:top-20 lg:self-start">
             {/* County Breakdown */}
-            <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
+            <div className="bg-gray-50/80 border border-gray-100 rounded-xl p-4">
               <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 flex items-center gap-2">
                 <MapPin className="w-3.5 h-3.5" /> Deals by County
               </h3>
@@ -242,7 +242,7 @@ export default function DealFinderPage() {
             </div>
 
             {/* Signal Breakdown */}
-            <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
+            <div className="bg-gray-50/80 border border-gray-100 rounded-xl p-4">
               <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 flex items-center gap-2">
                 <AlertTriangle className="w-3.5 h-3.5" /> Signal Types
               </h3>
@@ -257,7 +257,7 @@ export default function DealFinderPage() {
             </div>
 
             {/* Activity Feed */}
-            <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
+            <div className="bg-gray-50/80 border border-gray-100 rounded-xl p-4">
               <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 flex items-center gap-2">
                 <Activity className="w-3.5 h-3.5" /> Source Activity
               </h3>
