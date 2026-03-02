@@ -4,7 +4,7 @@ import { motion } from "framer-motion"
 import {
   X, Building2, AlertTriangle, TrendingUp, DollarSign,
   Users, Phone, Mail, Activity, ArrowUpRight, BarChart3,
-  Database, Clock, MapPin, FileText
+  Database, Clock, MapPin, FileText, ChevronLeft, ChevronRight
 } from "lucide-react"
 import type { Deal } from "@/data/deals"
 
@@ -25,7 +25,7 @@ function ScoreBadge({ score }: { score: number }) {
   )
 }
 
-export default function DealSlideout({ deal, onClose }: { deal: Deal; onClose: () => void }) {
+export default function DealSlideout({ deal, onClose, onPrev, onNext }: { deal: Deal; onClose: () => void; onPrev?: () => void; onNext?: () => void }) {
   const totalRevenue = deal.unitMix.reduce((s, u) => s + u.count * u.rent * 12, 0)
   const totalExpenses = deal.expenses.reduce((s, e) => s + e.annual, 0)
 
@@ -45,7 +45,7 @@ export default function DealSlideout({ deal, onClose }: { deal: Deal; onClose: (
         animate={{ x: 0 }}
         exit={{ x: "100%" }}
         transition={{ type: "spring", damping: 30, stiffness: 300 }}
-        className="fixed right-0 top-0 bottom-0 z-50 w-full max-w-xl bg-white border-l border-gray-200 shadow-2xl overflow-y-auto"
+        className="fixed right-0 top-0 bottom-0 z-50 w-full md:max-w-xl bg-white border-l border-gray-200 shadow-2xl overflow-y-auto"
       >
         {/* Header */}
         <div className="sticky top-0 bg-white/95 backdrop-blur-xl border-b border-gray-100 px-6 py-4 flex items-start justify-between z-10">
@@ -60,9 +60,21 @@ export default function DealSlideout({ deal, onClose }: { deal: Deal; onClose: (
               {deal.city}, {deal.state} — {deal.county} County
             </p>
           </div>
-          <button onClick={onClose} className="p-2 rounded-xl hover:bg-gray-100 text-gray-400 hover:text-gray-900 transition-colors">
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-1">
+            {onPrev && (
+              <button onClick={onPrev} className="p-2 rounded-xl hover:bg-gray-100 text-gray-400 hover:text-gray-900 transition-colors" title="Previous deal">
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+            )}
+            {onNext && (
+              <button onClick={onNext} className="p-2 rounded-xl hover:bg-gray-100 text-gray-400 hover:text-gray-900 transition-colors" title="Next deal">
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            )}
+            <button onClick={onClose} className="p-2 rounded-xl hover:bg-gray-100 text-gray-400 hover:text-gray-900 transition-colors">
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         <div className="p-6 space-y-5">

@@ -10,6 +10,7 @@ import {
 import { mockDeals, dashboardStats, type Deal } from "@/data/deals"
 import Navbar from "@/components/Navbar"
 import DealSlideout from "@/components/DealSlideout"
+import Footer from "@/components/Footer"
 
 function fmt(n: number) {
   if (n >= 1000000) return `$${(n / 1000000).toFixed(1)}M`
@@ -69,7 +70,7 @@ export default function DealFinderPage() {
             <h1 className="text-2xl font-bold text-gray-900">Off-Market Deal Finder</h1>
             <p className="text-sm text-gray-500 flex items-center gap-2 mt-1">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              {dashboardStats.sourcesActive} sources active — Last scan: {new Date(dashboardStats.lastScanTime).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+              {dashboardStats.sourcesActive} data sources active — Last scan: {new Date(dashboardStats.lastScanTime).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
               <span className="text-gray-300">|</span>
               {dashboardStats.countiesMonitored} counties
             </p>
@@ -151,8 +152,20 @@ export default function DealFinderPage() {
           {/* Main Content — Deal Table */}
           <div className="lg:col-span-3 space-y-3">
             <div className="flex items-center justify-between mb-2">
-              <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">{filteredDeals.length} Deals</h2>
+              <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">
+                {filteredDeals.length} {filteredDeals.length === 1 ? "Deal" : "Deals"} found
+                {countyFilter !== "all" && <span className="text-gray-400 font-normal"> in {countyFilter}</span>}
+              </h2>
             </div>
+
+            {filteredDeals.length === 0 && (
+              <div className="bg-white border border-dashed border-gray-300 rounded-xl p-12 text-center">
+                <Search className="w-10 h-10 text-gray-300 mx-auto mb-3" />
+                <h3 className="text-sm font-semibold text-gray-500 mb-1">No deals match your filters</h3>
+                <p className="text-xs text-gray-400">Try adjusting your county filter or sort criteria.</p>
+                <button onClick={() => setCountyFilter("all")} className="mt-3 text-xs text-[#0049B8] font-medium hover:underline">Clear filters</button>
+              </div>
+            )}
 
             {filteredDeals.map((deal, index) => (
               <motion.div
@@ -183,13 +196,17 @@ export default function DealFinderPage() {
                       )}
                     </div>
                   </div>
-                  <div className="flex-shrink-0 grid grid-cols-3 gap-3 text-right">
+                  <div className="flex-shrink-0 grid grid-cols-3 gap-3 text-right hidden sm:grid">
                     <div><p className="text-[10px] text-gray-400">Units</p><p className="text-sm font-bold text-gray-900">{deal.units}</p></div>
                     <div><p className="text-[10px] text-gray-400">Value</p><p className="text-sm font-bold text-gray-900">{fmt(deal.estimatedValue)}</p></div>
                     <div><p className="text-[10px] text-gray-400">Cap</p><p className="text-sm font-bold text-gray-900">{deal.capRate}%</p></div>
                     <div><p className="text-[10px] text-gray-400">NOI</p><p className="text-sm font-bold text-gray-900">{fmt(deal.currentNOI)}</p></div>
                     <div><p className="text-[10px] text-gray-400">Pro Forma</p><p className="text-sm font-bold text-emerald-600">{fmt(deal.proFormaNOI)}</p></div>
                     <div><p className="text-[10px] text-gray-400">Upside</p><p className="text-sm font-bold text-emerald-600">+{deal.valueAddUpside}%</p></div>
+                  </div>
+                  <div className="flex items-center gap-3 sm:hidden text-right flex-shrink-0">
+                    <div><p className="text-[10px] text-gray-400">Units</p><p className="text-sm font-bold text-gray-900">{deal.units}</p></div>
+                    <div><p className="text-[10px] text-gray-400">Cap</p><p className="text-sm font-bold text-gray-900">{deal.capRate}%</p></div>
                   </div>
                   <ChevronRight className="w-5 h-5 text-gray-300 group-hover:text-[#0049B8] transition-colors mt-2 flex-shrink-0" />
                 </div>
@@ -203,7 +220,7 @@ export default function DealFinderPage() {
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-4">
+          <div className="space-y-4 lg:sticky lg:top-20 lg:self-start">
             {/* County Breakdown */}
             <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
               <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 flex items-center gap-2">
@@ -262,9 +279,18 @@ export default function DealFinderPage() {
         </div>
       </div>
 
+      <Footer />
+
       {/* Slideout */}
       <AnimatePresence>
-        {selectedDeal && <DealSlideout deal={selectedDeal} onClose={() => setSelectedDeal(null)} />}
+        {selectedDeal && (
+          <DealSlideout
+            deal={selectedDeal}
+            onClose={() => setSelectedDeal(null)}
+            onPrev={filteredDeals.indexOf(selectedDeal) > 0 ? () => setSelectedDeal(filteredDeals[filteredDeals.indexOf(selectedDeal) - 1]) : undefined}
+            onNext={filteredDeals.indexOf(selectedDeal) < filteredDeals.length - 1 ? () => setSelectedDeal(filteredDeals[filteredDeals.indexOf(selectedDeal) + 1]) : undefined}
+          />
+        )}
       </AnimatePresence>
     </div>
   )

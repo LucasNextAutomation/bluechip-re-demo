@@ -2,145 +2,153 @@
 
 import Link from "next/link"
 import { motion } from "framer-motion"
-import { Search, FileSpreadsheet, Zap, Building2, ArrowRight, CheckCircle2 } from "lucide-react"
+import { Search, FileSpreadsheet, Zap, ArrowRight, CheckCircle2 } from "lucide-react"
+
+function BCRALogo({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 120 120" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="60" cy="60" r="58" stroke="#3B4559" strokeWidth="2.5" fill="white" />
+      <line x1="60" y1="30" x2="60" y2="90" stroke="#3B4559" strokeWidth="1.5" />
+      <text x="38" y="52" textAnchor="middle" fill="#3B4559" fontFamily="Inter, system-ui, sans-serif" fontSize="18" fontWeight="400" letterSpacing="2">b</text>
+      <text x="38" y="78" textAnchor="middle" fill="#3B4559" fontFamily="Inter, system-ui, sans-serif" fontSize="18" fontWeight="400" letterSpacing="2">r</text>
+      <text x="82" y="52" textAnchor="middle" fill="#3B4559" fontFamily="Inter, system-ui, sans-serif" fontSize="18" fontWeight="400" letterSpacing="2">c</text>
+      <text x="82" y="78" textAnchor="middle" fill="#3B4559" fontFamily="Inter, system-ui, sans-serif" fontSize="18" fontWeight="400" letterSpacing="2">a</text>
+    </svg>
+  )
+}
 
 const systems = [
   {
     href: "/deal-finder",
     title: "Off-Market Deal Finder",
-    price: "$5,000",
     icon: Search,
-    description: "Daily monitoring of 12+ public record sources across 6 counties. AI scores every lead 0-10 based on your criteria.",
-    features: ["12 data sources scanned daily", "AI distress scoring 0-10", "Owner skip tracing included", "Full financial analysis per deal"],
-    gradient: "from-blue-500/10 to-blue-600/5",
-    border: "hover:border-blue-300",
-    accent: "text-blue-600",
+    description: "Custom data aggregator scanning 15 sources across 6 counties. AI scores every lead and surfaces the highest-priority opportunities daily.",
+    highlights: ["15 live data sources", "AI distress scoring", "Skip tracing included"],
   },
   {
     href: "/underwriting",
     title: "AI Underwriting Assistant",
-    price: "$2,000",
     icon: FileSpreadsheet,
-    description: "Upload an OM. AI extracts every number, populates your Excel model, and flags assumptions it's not confident about.",
-    features: ["Upload OM → auto-extract data", "Populates your exact Excel model", "IRR, DSCR, waterfall calcs", "AI flags uncertain assumptions"],
-    gradient: "from-purple-500/10 to-purple-600/5",
-    border: "hover:border-purple-300",
-    accent: "text-purple-600",
+    description: "Upload an offering memorandum. AI extracts every number, populates your model, and flags assumptions it's not confident about.",
+    highlights: ["Auto-extract from OM", "IRR & waterfall calcs", "AI flags for review"],
   },
   {
     href: "/outreach",
     title: "Automated Outreach Engine",
-    price: "$1,500",
     icon: Zap,
-    description: "Skip trace owners, send personalized email and SMS sequences, track responses — all automated from your deal pipeline.",
-    features: ["Auto skip tracing", "4-touch email + SMS sequence", "AI-personalized messages", "Open/reply tracking + CRM"],
-    gradient: "from-emerald-500/10 to-emerald-600/5",
-    border: "hover:border-emerald-300",
-    accent: "text-emerald-600",
+    description: "Skip trace owners, send personalized sequences, and track every touchpoint — 4-touch over 14 days, fully automated from your pipeline.",
+    highlights: ["4-touch sequences", "Personalized messaging", "Open & reply tracking"],
   },
 ]
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-50">
+    <div className="min-h-screen bg-white">
       {/* Hero */}
-      <section className="relative py-20 md:py-32 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0049B8]/5 via-transparent to-transparent" />
-        <div className="absolute -top-40 -right-40 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl" />
+      <section className="relative py-24 md:py-36 overflow-hidden">
+        {/* Subtle background gradient */}
+        <div className="absolute inset-0 bg-gradient-to-b from-gray-50/80 via-white to-white" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-[#0049B8]/[0.03] rounded-full blur-3xl" />
 
-        <div className="max-w-5xl mx-auto px-4 relative">
+        <div className="max-w-4xl mx-auto px-6 relative">
           <div className="text-center">
+            {/* Logo */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="inline-flex items-center gap-2 bg-[#0049B8]/10 text-[#0049B8] px-4 py-2 rounded-full text-sm font-medium mb-6"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="flex justify-center mb-10"
             >
-              <Building2 className="h-4 w-4" />
-              Custom Demo for Blue Chip RE Advisors
+              <BCRALogo className="w-20 h-20 md:w-24 md:h-24" />
             </motion.div>
 
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
+            <motion.p
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 tracking-tight"
+              className="text-xs md:text-sm uppercase tracking-[0.2em] text-gray-400 font-medium mb-6"
             >
-              AI-Powered Multifamily<br />
-              <span className="text-[#0049B8]">Acquisition System</span>
+              Blue Chip RE Advisors
+            </motion.p>
+
+            <motion.h1
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.15 }}
+              className="text-3xl md:text-5xl lg:text-6xl font-semibold text-gray-900 mb-6 tracking-tight leading-[1.1]"
+            >
+              Your Multifamily<br />
+              Acquisition System
             </motion.h1>
 
             <motion.p
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="text-lg md:text-xl text-gray-500 mb-8 max-w-2xl mx-auto leading-relaxed"
+              transition={{ delay: 0.25 }}
+              className="text-base md:text-lg text-gray-500 mb-10 max-w-xl mx-auto leading-relaxed"
             >
-              Three systems working together to find off-market deals, underwrite them instantly, and reach owners automatically — built for Class C/B- multifamily, 5-50 units, Boston metro & Southern NH.
+              Three AI-powered systems working together — find off-market deals, underwrite them instantly, and reach owners automatically.
             </motion.p>
 
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="flex items-center justify-center gap-6 text-sm text-gray-400"
+              transition={{ delay: 0.35 }}
+              className="flex items-center justify-center gap-8 text-sm text-gray-400"
             >
-              <span className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                12 sources monitored
+              <span className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                Class C/B- multifamily
               </span>
-              <span>6 counties</span>
-              <span>47 deals found</span>
+              <span>5–50 units</span>
+              <span>Boston metro & Southern NH</span>
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* System Cards */}
-      <section className="py-12 md:py-20">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">Three Systems, One Pipeline</h2>
-            <p className="text-gray-500 max-w-xl mx-auto">Each system is built and delivered independently. Start with one or take all three.</p>
-          </div>
+      {/* Divider */}
+      <div className="max-w-24 mx-auto border-t border-gray-200" />
 
-          <div className="grid md:grid-cols-3 gap-6">
+      {/* System Cards */}
+      <section className="py-20 md:py-28">
+        <div className="max-w-5xl mx-auto px-6">
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            className="text-center text-xs uppercase tracking-[0.2em] text-gray-400 font-medium mb-14"
+          >
+            Explore the live demos
+          </motion.p>
+
+          <div className="grid md:grid-cols-3 gap-5">
             {systems.map((sys, i) => (
               <motion.div
                 key={sys.href}
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 * i }}
+                transition={{ delay: 0.45 + 0.08 * i }}
               >
-                <Link href={sys.href} className="block group">
-                  <div className={`relative bg-white rounded-2xl border border-gray-200 ${sys.border} p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-1`}>
-                    <div className={`absolute inset-0 bg-gradient-to-br ${sys.gradient} rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity`} />
-                    <div className="relative">
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="w-12 h-12 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-center group-hover:bg-white transition-colors">
-                          <sys.icon className={`w-6 h-6 ${sys.accent}`} />
+                <Link href={sys.href} className="block group h-full">
+                  <div className="relative h-full bg-white border border-gray-200 rounded-2xl p-6 transition-all duration-300 hover:border-[#0049B8]/40 hover:shadow-lg hover:-translate-y-0.5">
+                    <div className="w-10 h-10 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-center mb-5 group-hover:bg-[#0049B8]/5 group-hover:border-[#0049B8]/20 transition-colors">
+                      <sys.icon className="w-5 h-5 text-gray-400 group-hover:text-[#0049B8] transition-colors" />
+                    </div>
+
+                    <h3 className="text-base font-semibold text-gray-900 mb-2">{sys.title}</h3>
+                    <p className="text-sm text-gray-500 leading-relaxed mb-5">{sys.description}</p>
+
+                    <div className="space-y-2 mb-6">
+                      {sys.highlights.map((h, j) => (
+                        <div key={j} className="flex items-center gap-2 text-sm">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-[#0049B8]/60 flex-shrink-0" />
+                          <span className="text-gray-600">{h}</span>
                         </div>
-                        <div className="text-right">
-                          <div className="text-lg font-bold text-[#0049B8]">{sys.price}</div>
-                          <div className="text-[10px] text-gray-400 uppercase">one-time build</div>
-                        </div>
-                      </div>
+                      ))}
+                    </div>
 
-                      <h3 className="text-xl font-bold text-gray-900 mb-2">{sys.title}</h3>
-                      <p className="text-sm text-gray-500 mb-4 leading-relaxed">{sys.description}</p>
-
-                      <div className="space-y-2 mb-6">
-                        {sys.features.map((f, j) => (
-                          <div key={j} className="flex items-center gap-2 text-sm">
-                            <CheckCircle2 className={`w-4 h-4 ${sys.accent} flex-shrink-0`} />
-                            <span className="text-gray-600">{f}</span>
-                          </div>
-                        ))}
-                      </div>
-
-                      <div className="flex items-center gap-2 text-sm font-medium text-[#0049B8] group-hover:gap-3 transition-all">
-                        View Live Demo <ArrowRight className="w-4 h-4" />
-                      </div>
+                    <div className="flex items-center gap-1.5 text-sm font-medium text-[#0049B8] group-hover:gap-2.5 transition-all mt-auto">
+                      View Demo <ArrowRight className="w-3.5 h-3.5" />
                     </div>
                   </div>
                 </Link>
@@ -150,32 +158,13 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Bundle */}
-      <section className="py-12">
-        <div className="max-w-3xl mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="bg-gradient-to-br from-[#0049B8] to-blue-700 rounded-2xl p-8 text-center text-white"
-          >
-            <h3 className="text-2xl font-bold mb-2">Full System Bundle</h3>
-            <p className="text-blue-100 mb-4">All three systems working together — find deals, underwrite them, and reach owners automatically.</p>
-            <div className="flex items-center justify-center gap-4 mb-4">
-              <span className="text-lg text-blue-200 line-through">$8,500</span>
-              <span className="text-4xl font-bold">$7,500</span>
-              <span className="text-blue-200 text-sm">one-time</span>
-            </div>
-            <p className="text-sm text-blue-200">+ $600/month hosting & monitoring</p>
-          </motion.div>
-        </div>
-      </section>
-
       {/* Footer */}
-      <footer className="py-8 border-t border-gray-200">
-        <div className="max-w-5xl mx-auto px-4 text-center">
-          <p className="text-xs text-gray-400 mb-1">Demo for Blue Chip RE Advisors — Data is simulated for demonstration purposes</p>
-          <p className="text-sm text-[#0049B8] font-medium">Powered by NextAutomation</p>
+      <footer className="py-8 border-t border-gray-100">
+        <div className="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p className="text-xs text-gray-400">Interactive demo — data is simulated for demonstration purposes</p>
+          <p className="text-xs text-gray-400">
+            Built by <span className="text-[#0049B8] font-medium">NextAutomation</span>
+          </p>
         </div>
       </footer>
     </div>

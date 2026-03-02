@@ -10,6 +10,7 @@ import {
 } from "lucide-react"
 import { outreachLeads, emailSequence, outreachStats, type OutreachLead, type PipelineStage } from "@/data/outreach"
 import Navbar from "@/components/Navbar"
+import Footer from "@/components/Footer"
 
 function ScoreBadge({ score }: { score: number }) {
   const color = score >= 8 ? "bg-red-500/10 text-red-600" : score >= 6 ? "bg-amber-500/10 text-amber-600" : "bg-emerald-500/10 text-emerald-600"
@@ -70,7 +71,7 @@ export default function OutreachPage() {
 
         {/* Pipeline View */}
         {view === "pipeline" && (
-          <div className="grid grid-cols-5 gap-3 overflow-x-auto">
+          <div className="flex flex-col md:grid md:grid-cols-5 gap-3 md:overflow-x-auto">
             {stages.map(stage => {
               const config = stageConfig[stage]
               const leads = leadsByStage(stage)
@@ -168,6 +169,8 @@ export default function OutreachPage() {
           </div>
         )}
 
+        <Footer />
+
         {/* Lead Detail / Sequence View */}
         <AnimatePresence>
           {selectedLead && (
@@ -184,7 +187,7 @@ export default function OutreachPage() {
                 animate={{ x: 0 }}
                 exit={{ x: "100%" }}
                 transition={{ type: "spring", damping: 30, stiffness: 300 }}
-                className="fixed right-0 top-0 bottom-0 z-50 w-full max-w-lg bg-white border-l border-gray-200 shadow-2xl overflow-y-auto"
+                className="fixed right-0 top-0 bottom-0 z-50 w-full md:max-w-lg bg-white border-l border-gray-200 shadow-2xl overflow-y-auto"
               >
                 <div className="sticky top-0 bg-white/95 backdrop-blur-xl border-b border-gray-100 px-6 py-4 flex items-start justify-between z-10">
                   <div>

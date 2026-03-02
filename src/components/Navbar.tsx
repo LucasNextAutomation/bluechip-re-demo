@@ -1,8 +1,9 @@
 "use client"
 
+import { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Building2, Search, FileSpreadsheet, Zap } from "lucide-react"
+import { Building2, Search, FileSpreadsheet, Zap, Menu, X } from "lucide-react"
 
 const navItems = [
   { href: "/", label: "Overview", icon: Building2 },
@@ -13,6 +14,7 @@ const navItems = [
 
 export default function Navbar() {
   const pathname = usePathname()
+  const [mobileOpen, setMobileOpen] = useState(false)
 
   return (
     <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-200">
@@ -25,7 +27,8 @@ export default function Navbar() {
             <span className="font-bold text-gray-900 text-sm hidden sm:block">Blue Chip RE</span>
           </Link>
 
-          <div className="flex items-center gap-1">
+          {/* Desktop nav */}
+          <div className="hidden md:flex items-center gap-1">
             {navItems.map(item => {
               const active = pathname === item.href
               return (
@@ -39,21 +42,61 @@ export default function Navbar() {
                   }`}
                 >
                   <item.icon className="w-4 h-4" />
-                  <span className="hidden sm:inline">{item.label}</span>
+                  <span>{item.label}</span>
                 </Link>
               )
             })}
           </div>
 
-          <div className="flex items-center gap-2 text-xs text-gray-400">
-            <span className="hidden md:flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              Live Demo
-            </span>
-            <span className="text-[#0049B8] font-semibold">NextAutomation</span>
+          <div className="flex items-center gap-3">
+            <div className="hidden md:flex items-center gap-2 text-xs text-gray-400">
+              <span className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                Live Demo
+              </span>
+              <span className="text-[#0049B8] font-semibold">NextAutomation</span>
+            </div>
+
+            {/* Mobile hamburger */}
+            <button
+              onClick={() => setMobileOpen(!mobileOpen)}
+              className="md:hidden p-2 rounded-lg hover:bg-gray-100 text-gray-600"
+            >
+              {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
           </div>
         </div>
       </div>
+
+      {/* Mobile menu */}
+      {mobileOpen && (
+        <div className="md:hidden border-t border-gray-100 bg-white/95 backdrop-blur-xl">
+          <div className="px-4 py-3 space-y-1">
+            {navItems.map(item => {
+              const active = pathname === item.href
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setMobileOpen(false)}
+                  className={`flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                    active
+                      ? "bg-[#0049B8] text-white"
+                      : "text-gray-600 hover:bg-gray-50"
+                  }`}
+                >
+                  <item.icon className="w-4 h-4" />
+                  {item.label}
+                </Link>
+              )
+            })}
+            <div className="pt-2 mt-2 border-t border-gray-100 flex items-center gap-2 px-3 text-xs text-gray-400">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              Live Demo — <span className="text-[#0049B8] font-semibold">NextAutomation</span>
+            </div>
+          </div>
+        </div>
+      )}
     </nav>
   )
 }

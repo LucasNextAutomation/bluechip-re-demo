@@ -48,7 +48,7 @@ export const outreachLeads: OutreachLead[] = [
     propertyAddress: "312 Commonwealth Ave, Lowell MA",
     city: "Lowell",
     state: "MA",
-    units: 24,
+    units: 32,
     distressScore: 9.2,
     distressSignals: ["Executor deed filed", "Probate active", "Tax delinquent 24mo"],
     phone: "(978) 555-0247",

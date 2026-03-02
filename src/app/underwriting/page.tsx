@@ -9,6 +9,7 @@ import {
 import { underwritingDeal } from "@/data/underwriting"
 import Navbar from "@/components/Navbar"
 import Spreadsheet from "@/components/Spreadsheet"
+import Footer from "@/components/Footer"
 
 type Stage = "upload" | "processing" | "review" | "complete"
 
@@ -289,6 +290,8 @@ export default function UnderwritingPage() {
             </motion.div>
           )}
         </AnimatePresence>
+
+        <Footer />
       </div>
     </div>
   )

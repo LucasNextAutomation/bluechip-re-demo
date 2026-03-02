@@ -117,17 +117,17 @@ export const mockDeals: Deal[] = [
     city: "Lowell",
     state: "MA",
     county: "Middlesex",
-    units: 24,
+    units: 32,
     class: "C+",
     yearBuilt: 1958,
-    sqft: 19200,
+    sqft: 25600,
     lotSize: "0.62 acres",
     askingPrice: null,
-    estimatedValue: 2400000,
+    estimatedValue: 3200000,
     pricePerUnit: 100000,
-    currentNOI: 178000,
-    proFormaNOI: 252000,
-    capRate: 7.42,
+    currentNOI: 233606,
+    proFormaNOI: 336000,
+    capRate: 7.3,
     proFormaCapRate: 10.5,
     cashOnCash: 8.8,
     irr5yr: 19.6,
@@ -152,7 +152,7 @@ export const mockDeals: Deal[] = [
     email: "mcallahan.executor@gmail.com",
     taxStatus: "Delinquent — $52,800 owed (FY23 + FY24 + FY25)",
     mortgageBalance: null,
-    assessedValue: 1890000,
+    assessedValue: 2520000,
     lastSaleDate: "1995-06-22",
     lastSalePrice: 340000,
     lienHistory: [
@@ -163,19 +163,20 @@ export const mockDeals: Deal[] = [
     dateFound: "2026-03-01",
     status: "new",
     unitMix: [
-      { type: "Studio", count: 4, rent: 850 },
-      { type: "1BR", count: 12, rent: 1100 },
-      { type: "2BR", count: 8, rent: 1380 }
+      { type: "Studio", count: 6, rent: 850 },
+      { type: "1BR", count: 14, rent: 1100 },
+      { type: "2BR", count: 8, rent: 1380 },
+      { type: "3BR", count: 4, rent: 1550 }
     ],
     expenses: [
-      { category: "Property Tax", annual: 36800 },
-      { category: "Insurance", annual: 18400 },
-      { category: "Maintenance & Repairs", annual: 28800 },
-      { category: "Property Management (8%)", annual: 27187 },
-      { category: "Utilities (common areas)", annual: 14400 },
-      { category: "Water/Sewer", annual: 16800 },
-      { category: "Trash Removal", annual: 6400 },
-      { category: "Vacancy Reserve (5%)", annual: 16992 }
+      { category: "Property Tax", annual: 48000 },
+      { category: "Insurance", annual: 24000 },
+      { category: "Maintenance & Repairs", annual: 38400 },
+      { category: "Property Management (8%)", annual: 36230 },
+      { category: "Utilities (common areas)", annual: 19200 },
+      { category: "Water/Sewer", annual: 22400 },
+      { category: "Trash Removal", annual: 8400 },
+      { category: "Vacancy Reserve (5%)", annual: 22644 }
     ]
   },
   {
@@ -254,9 +255,9 @@ export const mockDeals: Deal[] = [
     askingPrice: null,
     estimatedValue: 3200000,
     pricePerUnit: 100000,
-    currentNOI: 224000,
+    currentNOI: 225436,
     proFormaNOI: 336000,
-    capRate: 7.0,
+    capRate: 7.04,
     proFormaCapRate: 10.5,
     cashOnCash: 7.6,
     irr5yr: 21.8,
@@ -384,7 +385,7 @@ export const mockDeals: Deal[] = [
     askingPrice: null,
     estimatedValue: 3780000,
     pricePerUnit: 90000,
-    currentNOI: 268000,
+    currentNOI: 267905,
     proFormaNOI: 402000,
     capRate: 7.09,
     proFormaCapRate: 10.6,
@@ -430,14 +431,14 @@ export const mockDeals: Deal[] = [
       { type: "3BR", count: 4, rent: 1380 }
     ],
     expenses: [
-      { category: "Property Tax", annual: 58800 },
-      { category: "Insurance", annual: 34200 },
-      { category: "Maintenance & Repairs", annual: 56700 },
-      { category: "Property Management (8%)", annual: 43546 },
-      { category: "Utilities (common areas)", annual: 28800 },
+      { category: "Property Tax", annual: 54600 },
+      { category: "Insurance", annual: 31500 },
+      { category: "Maintenance & Repairs", annual: 45360 },
+      { category: "Property Management (8%)", annual: 43123 },
+      { category: "Utilities (common areas)", annual: 25800 },
       { category: "Water/Sewer", annual: 31200 },
       { category: "Trash Removal", annual: 12600 },
-      { category: "Vacancy Reserve (10%)", annual: 54432 }
+      { category: "Vacancy Reserve (5%)", annual: 26952 }
     ]
   }
 ]
@@ -450,7 +451,7 @@ export const dashboardStats = {
   totalUnits: 284,
   avgDistressScore: 7.2,
   countiesMonitored: 6,
-  sourcesActive: 12,
+  sourcesActive: 15,
   lastScanTime: "2026-03-01T14:32:00",
   countyBreakdown: [
     { county: "Suffolk, MA", deals: 11, units: 142 },
