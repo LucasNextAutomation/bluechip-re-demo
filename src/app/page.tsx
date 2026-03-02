@@ -166,7 +166,7 @@ export default function LandingPage() {
               <span className="text-4xl font-bold">$7,500</span>
               <span className="text-blue-200 text-sm">one-time</span>
             </div>
-            <p className="text-sm text-blue-200">+ $500/month hosting & monitoring</p>
+            <p className="text-sm text-blue-200">+ $600/month hosting & monitoring</p>
           </motion.div>
         </div>
       </section>
