@@ -1,11 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useCallback, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import {
   Search, Building2, AlertTriangle, TrendingUp, MapPin,
   ChevronRight, Filter, Clock, Database, Activity,
-  DollarSign, Users, BarChart3, ArrowUpDown, SlidersHorizontal
+  DollarSign, Users, BarChart3, ArrowUpDown, SlidersHorizontal,
+  Radar
 } from "lucide-react"
 import { mockDeals, dashboardStats, type Deal } from "@/data/deals"
 import Navbar from "@/components/Navbar"
@@ -37,7 +38,15 @@ function StatusBadge({ status }: { status: Deal["status"] }) {
 
 type SortKey = "distressScore" | "capRate" | "units" | "estimatedValue"
 
-const activityFeed = [
+const scanSteps = [
+  { label: "Connecting to 15 data sources...", duration: 1000 },
+  { label: "Scanning county registries...", duration: 1500 },
+  { label: "Analyzing tax records & liens...", duration: 1000 },
+  { label: "Cross-referencing ownership data...", duration: 1000 },
+  { label: "AI scoring distress signals...", duration: 1500 },
+]
+
+const initialActivityFeed = [
   { time: "3 min ago", text: "2 new filings detected in Suffolk County", type: "new" },
   { time: "18 min ago", text: "Skip trace complete — Heritage Properties LLC", type: "update" },
   { time: "42 min ago", text: "AI scored DEAL-006 at 9.5/10 — HIGH PRIORITY", type: "alert" },
@@ -52,12 +61,93 @@ export default function DealFinderPage() {
   const [sortBy, setSortBy] = useState<SortKey>("distressScore")
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc")
   const [showFilters, setShowFilters] = useState(false)
+  const [scanning, setScanning] = useState(false)
+  const [scanStep, setScanStep] = useState(-1)
+  const [scanProgress, setScanProgress] = useState(0)
+  const [scanComplete, setScanComplete] = useState(false)
+  const [revealedDeals, setRevealedDeals] = useState<string[]>([])
+  const [activityFeed, setActivityFeed] = useState(initialActivityFeed)
+  const scanningRef = useRef(false)
 
-  const filteredDeals = mockDeals
+  const hiddenDeals = mockDeals.filter(d => d.hidden)
+  const visibleDeals = mockDeals.filter(d => !d.hidden || revealedDeals.includes(d.id))
+
+  const filteredDeals = visibleDeals
     .filter(d => countyFilter === "all" || d.county === countyFilter)
-    .sort((a, b) => sortDir === "desc" ? b[sortBy] - a[sortBy] : a[sortBy] - b[sortBy])
+    .sort((a, b) => {
+      const aNew = revealedDeals.includes(a.id) ? 1 : 0
+      const bNew = revealedDeals.includes(b.id) ? 1 : 0
+      if (aNew !== bNew) return bNew - aNew // New deals first
+      return sortDir === "desc" ? b[sortBy] - a[sortBy] : a[sortBy] - b[sortBy]
+    })
 
-  const counties = [...new Set(mockDeals.map(d => d.county))]
+  const counties = [...new Set(mockDeals.filter(d => !d.hidden).map(d => d.county))]
+
+  const totalDeals = scanComplete ? dashboardStats.totalDealsFound + hiddenDeals.length : dashboardStats.totalDealsFound
+  const totalUnits = scanComplete ? dashboardStats.totalUnits + hiddenDeals.reduce((s, d) => s + d.units, 0) : dashboardStats.totalUnits
+
+  const runScan = useCallback(async () => {
+    if (scanningRef.current) return
+    scanningRef.current = true
+    setScanning(true)
+    setScanStep(0)
+    setScanProgress(0)
+    setScanComplete(false)
+
+    const totalDuration = scanSteps.reduce((s, st) => s + st.duration, 0) + 500
+
+    // Progress through steps
+    let elapsed = 0
+    for (let i = 0; i < scanSteps.length; i++) {
+      setScanStep(i)
+      const step = scanSteps[i]
+
+      // Add activity feed entry during scan
+      if (i === 1) {
+        setActivityFeed(prev => [{ time: "Just now", text: "Scanning Middlesex County registry for new filings...", type: "new" }, ...prev.slice(0, 5)])
+      }
+      if (i === 3) {
+        setActivityFeed(prev => [{ time: "Just now", text: "Cross-referencing 3 new ownership transfers...", type: "update" }, ...prev.slice(0, 5)])
+      }
+      if (i === 4) {
+        setActivityFeed(prev => [{ time: "Just now", text: "AI flagged DEAL-007 — foreclosure auction imminent", type: "alert" }, ...prev.slice(0, 5)])
+      }
+
+      // Animate progress
+      const startProgress = elapsed / totalDuration * 100
+      elapsed += step.duration
+      const endProgress = elapsed / totalDuration * 100
+
+      await new Promise<void>(resolve => {
+        const startTime = Date.now()
+        const animate = () => {
+          const fraction = Math.min((Date.now() - startTime) / step.duration, 1)
+          setScanProgress(startProgress + (endProgress - startProgress) * fraction)
+          if (fraction < 1) requestAnimationFrame(animate)
+          else resolve()
+        }
+        requestAnimationFrame(animate)
+      })
+    }
+
+    // Complete
+    setScanStep(scanSteps.length)
+    setScanProgress(100)
+
+    await new Promise(r => setTimeout(r, 500))
+
+    // Reveal hidden deals
+    const newDealIds = hiddenDeals.map(d => d.id)
+    setRevealedDeals(newDealIds)
+    setScanComplete(true)
+    setScanning(false)
+    scanningRef.current = false
+
+    setActivityFeed(prev => [
+      { time: "Just now", text: `Scan complete — ${hiddenDeals.length} new deals discovered!`, type: "alert" },
+      ...prev.slice(0, 5)
+    ])
+  }, [hiddenDeals])
 
   return (
     <div className="min-h-screen bg-white">
@@ -75,13 +165,60 @@ export default function DealFinderPage() {
               {dashboardStats.countiesMonitored} counties
             </p>
           </div>
-          <button
-            onClick={() => setShowFilters(!showFilters)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${showFilters ? "bg-gray-900 text-white" : "border border-gray-200 text-gray-500 hover:bg-gray-50"}`}
-          >
-            <SlidersHorizontal className="w-4 h-4" /> Filters
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={runScan}
+              disabled={scanning || scanComplete}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                scanning ? "bg-[#0049B8] text-white animate-pulse cursor-wait"
+                : scanComplete ? "bg-emerald-500 text-white cursor-default"
+                : "bg-[#0049B8] text-white hover:bg-[#003a93] shadow-lg shadow-[#0049B8]/25"
+              }`}
+            >
+              <Radar className={`w-4 h-4 ${scanning ? "animate-spin" : ""}`} />
+              {scanning ? "Scanning..." : scanComplete ? `${hiddenDeals.length} New Found` : "Run Scan"}
+            </button>
+            <button
+              onClick={() => setShowFilters(!showFilters)}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${showFilters ? "bg-gray-900 text-white" : "border border-gray-200 text-gray-500 hover:bg-gray-50"}`}
+            >
+              <SlidersHorizontal className="w-4 h-4" /> Filters
+            </button>
+          </div>
         </div>
+
+        {/* Scan Progress Bar */}
+        <AnimatePresence>
+          {scanning && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="overflow-hidden mb-6"
+            >
+              <div className="bg-[#0049B8]/5 border border-[#0049B8]/20 rounded-xl p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-medium text-[#0049B8]">
+                    {scanStep < scanSteps.length ? scanSteps[scanStep].label : `Scan complete — ${hiddenDeals.length} new deals found`}
+                  </span>
+                  <span className="text-xs text-gray-400 font-mono">{Math.round(scanProgress)}%</span>
+                </div>
+                <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                  <motion.div
+                    className="h-full bg-[#0049B8] rounded-full"
+                    style={{ width: `${scanProgress}%` }}
+                    transition={{ duration: 0.1 }}
+                  />
+                </div>
+                <div className="flex items-center gap-4 mt-2">
+                  {scanSteps.map((_, i) => (
+                    <span key={i} className={`w-2 h-2 rounded-full ${i < scanStep ? "bg-emerald-500" : i === scanStep ? "bg-[#0049B8] animate-pulse" : "bg-gray-300"}`} />
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Filter Bar */}
         <AnimatePresence>
@@ -122,7 +259,7 @@ export default function DealFinderPage() {
                   className="flex items-center gap-1 px-3 py-1.5 mt-4 rounded-lg border border-gray-200 text-sm text-gray-600 hover:bg-gray-50"
                 >
                   <ArrowUpDown className="w-3.5 h-3.5" />
-                  {sortDir === "desc" ? "High → Low" : "Low → High"}
+                  {sortDir === "desc" ? "High \u2192 Low" : "Low \u2192 High"}
                 </button>
               </div>
             </motion.div>
@@ -132,9 +269,9 @@ export default function DealFinderPage() {
         {/* Stats Row */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
           {[
-            { label: "Total Deals", value: dashboardStats.totalDealsFound.toString(), sub: `${dashboardStats.newThisWeek} new this week`, icon: Search, color: "text-[#0049B8]" },
-            { label: "High Distress (8+)", value: dashboardStats.highDistress.toString(), sub: "Immediate opportunities", icon: AlertTriangle, color: "text-red-500" },
-            { label: "Total Units", value: dashboardStats.totalUnits.toString(), sub: "Across 6 counties", icon: Building2, color: "text-purple-500" },
+            { label: "Total Deals", value: totalDeals.toString(), sub: `${scanComplete ? dashboardStats.newThisWeek + hiddenDeals.length : dashboardStats.newThisWeek} new this week`, icon: Search, color: "text-[#0049B8]" },
+            { label: "High Distress (8+)", value: (scanComplete ? dashboardStats.highDistress + hiddenDeals.filter(d => d.distressScore >= 8).length : dashboardStats.highDistress).toString(), sub: "Immediate opportunities", icon: AlertTriangle, color: "text-red-500" },
+            { label: "Total Units", value: totalUnits.toString(), sub: `Across ${dashboardStats.countiesMonitored} counties`, icon: Building2, color: "text-purple-500" },
             { label: "Avg Cap Rate", value: `${dashboardStats.avgCapRate}%`, sub: "All deals", icon: TrendingUp, color: "text-emerald-500" },
           ].map(s => (
             <div key={s.label} className="bg-gray-50/80 border border-gray-100 rounded-xl p-4">
@@ -167,56 +304,66 @@ export default function DealFinderPage() {
               </div>
             )}
 
-            {filteredDeals.map((deal, index) => (
-              <motion.div
-                key={deal.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.03 * index }}
-                onClick={() => setSelectedDeal(deal)}
-                className="group bg-white border border-gray-200 hover:border-gray-300 rounded-xl p-4 cursor-pointer transition-all hover:shadow-md"
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="text-xs font-mono text-gray-400">{deal.id}</span>
-                      <StatusBadge status={deal.status} />
-                      <ScoreBadge score={deal.distressScore} />
+            {filteredDeals.map((deal, index) => {
+              const isNew = revealedDeals.includes(deal.id)
+              return (
+                <motion.div
+                  key={deal.id}
+                  initial={isNew ? { opacity: 0, y: -20, scale: 0.95 } : { opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={isNew ? { delay: 0.2 * revealedDeals.indexOf(deal.id), type: "spring", stiffness: 200 } : { delay: 0.03 * index }}
+                  onClick={() => setSelectedDeal(deal)}
+                  className={`group bg-white border rounded-xl p-4 cursor-pointer transition-all hover:shadow-md ${
+                    isNew ? "border-[#0049B8] ring-1 ring-[#0049B8]/20" : "border-gray-200 hover:border-gray-300"
+                  }`}
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-xs font-mono text-gray-400">{deal.id}</span>
+                        <StatusBadge status={deal.status} />
+                        <ScoreBadge score={deal.distressScore} />
+                        {isNew && (
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#0049B8] text-white animate-pulse">
+                            NEW
+                          </span>
+                        )}
+                      </div>
+                      <h3 className="text-base font-bold text-gray-900 group-hover:text-[#0049B8] transition-colors">{deal.address}</h3>
+                      <p className="text-sm text-gray-500">{deal.city}, {deal.state} — {deal.county} County</p>
+                      <div className="flex flex-wrap gap-1.5 mt-2">
+                        {deal.distressSignals.slice(0, 3).map((s, i) => (
+                          <span key={i} className="px-2 py-0.5 rounded bg-red-50 border border-red-100 text-[10px] text-red-600 truncate max-w-[200px]">
+                            {s.split("\u2014")[0].trim()}
+                          </span>
+                        ))}
+                        {deal.distressSignals.length > 3 && (
+                          <span className="px-2 py-0.5 rounded bg-gray-50 text-[10px] text-gray-400">+{deal.distressSignals.length - 3}</span>
+                        )}
+                      </div>
                     </div>
-                    <h3 className="text-base font-bold text-gray-900 group-hover:text-[#0049B8] transition-colors">{deal.address}</h3>
-                    <p className="text-sm text-gray-500">{deal.city}, {deal.state} — {deal.county} County</p>
-                    <div className="flex flex-wrap gap-1.5 mt-2">
-                      {deal.distressSignals.slice(0, 3).map((s, i) => (
-                        <span key={i} className="px-2 py-0.5 rounded bg-red-50 border border-red-100 text-[10px] text-red-600 truncate max-w-[200px]">
-                          {s.split("—")[0].trim()}
-                        </span>
-                      ))}
-                      {deal.distressSignals.length > 3 && (
-                        <span className="px-2 py-0.5 rounded bg-gray-50 text-[10px] text-gray-400">+{deal.distressSignals.length - 3}</span>
-                      )}
+                    <div className="flex-shrink-0 grid grid-cols-3 gap-3 text-right hidden sm:grid">
+                      <div><p className="text-[10px] text-gray-400">Units</p><p className="text-sm font-bold text-gray-900">{deal.units}</p></div>
+                      <div><p className="text-[10px] text-gray-400">Value</p><p className="text-sm font-bold text-gray-900">{fmt(deal.estimatedValue)}</p></div>
+                      <div><p className="text-[10px] text-gray-400">Cap</p><p className="text-sm font-bold text-gray-900">{deal.capRate}%</p></div>
+                      <div><p className="text-[10px] text-gray-400">NOI</p><p className="text-sm font-bold text-gray-900">{fmt(deal.currentNOI)}</p></div>
+                      <div><p className="text-[10px] text-gray-400">Pro Forma</p><p className="text-sm font-bold text-emerald-600">{fmt(deal.proFormaNOI)}</p></div>
+                      <div><p className="text-[10px] text-gray-400">Upside</p><p className="text-sm font-bold text-emerald-600">+{deal.valueAddUpside}%</p></div>
                     </div>
+                    <div className="flex items-center gap-3 sm:hidden text-right flex-shrink-0">
+                      <div><p className="text-[10px] text-gray-400">Units</p><p className="text-sm font-bold text-gray-900">{deal.units}</p></div>
+                      <div><p className="text-[10px] text-gray-400">Cap</p><p className="text-sm font-bold text-gray-900">{deal.capRate}%</p></div>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-gray-300 group-hover:text-[#0049B8] transition-colors mt-2 flex-shrink-0" />
                   </div>
-                  <div className="flex-shrink-0 grid grid-cols-3 gap-3 text-right hidden sm:grid">
-                    <div><p className="text-[10px] text-gray-400">Units</p><p className="text-sm font-bold text-gray-900">{deal.units}</p></div>
-                    <div><p className="text-[10px] text-gray-400">Value</p><p className="text-sm font-bold text-gray-900">{fmt(deal.estimatedValue)}</p></div>
-                    <div><p className="text-[10px] text-gray-400">Cap</p><p className="text-sm font-bold text-gray-900">{deal.capRate}%</p></div>
-                    <div><p className="text-[10px] text-gray-400">NOI</p><p className="text-sm font-bold text-gray-900">{fmt(deal.currentNOI)}</p></div>
-                    <div><p className="text-[10px] text-gray-400">Pro Forma</p><p className="text-sm font-bold text-emerald-600">{fmt(deal.proFormaNOI)}</p></div>
-                    <div><p className="text-[10px] text-gray-400">Upside</p><p className="text-sm font-bold text-emerald-600">+{deal.valueAddUpside}%</p></div>
+                  <div className="flex items-center gap-4 mt-3 pt-3 border-t border-gray-100">
+                    <span className="text-[10px] text-gray-400 flex items-center gap-1"><Users className="w-3 h-3" /> {deal.ownerName}</span>
+                    <span className="text-[10px] text-gray-400 flex items-center gap-1"><Clock className="w-3 h-3" /> Owned {deal.ownershipYears}yr</span>
+                    <span className="text-[10px] text-gray-400 flex items-center gap-1"><Database className="w-3 h-3" /> {deal.source.length} sources</span>
                   </div>
-                  <div className="flex items-center gap-3 sm:hidden text-right flex-shrink-0">
-                    <div><p className="text-[10px] text-gray-400">Units</p><p className="text-sm font-bold text-gray-900">{deal.units}</p></div>
-                    <div><p className="text-[10px] text-gray-400">Cap</p><p className="text-sm font-bold text-gray-900">{deal.capRate}%</p></div>
-                  </div>
-                  <ChevronRight className="w-5 h-5 text-gray-300 group-hover:text-[#0049B8] transition-colors mt-2 flex-shrink-0" />
-                </div>
-                <div className="flex items-center gap-4 mt-3 pt-3 border-t border-gray-100">
-                  <span className="text-[10px] text-gray-400 flex items-center gap-1"><Users className="w-3 h-3" /> {deal.ownerName}</span>
-                  <span className="text-[10px] text-gray-400 flex items-center gap-1"><Clock className="w-3 h-3" /> Owned {deal.ownershipYears}yr</span>
-                  <span className="text-[10px] text-gray-400 flex items-center gap-1"><Database className="w-3 h-3" /> {deal.source.length} sources</span>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              )
+            })}
           </div>
 
           {/* Sidebar */}
@@ -263,7 +410,12 @@ export default function DealFinderPage() {
               </h3>
               <div className="space-y-3">
                 {activityFeed.map((a, i) => (
-                  <div key={i} className="flex items-start gap-2">
+                  <motion.div
+                    key={`${a.text}-${i}`}
+                    initial={a.time === "Just now" ? { opacity: 0, x: -10 } : false}
+                    animate={{ opacity: 1, x: 0 }}
+                    className="flex items-start gap-2"
+                  >
                     <div className={`w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0 ${
                       a.type === "alert" ? "bg-red-500" : a.type === "new" ? "bg-blue-500" : "bg-gray-400"
                     }`} />
@@ -271,7 +423,7 @@ export default function DealFinderPage() {
                       <p className="text-xs text-gray-700">{a.text}</p>
                       <p className="text-[10px] text-gray-400">{a.time}</p>
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
             </div>
