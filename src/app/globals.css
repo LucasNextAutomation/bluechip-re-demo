@@ -1,19 +1,87 @@
 @import "tailwindcss";
 
 :root {
-  --background: 0 0% 100%;
-  --foreground: 222.2 84% 4.9%;
-  --primary: 221 100% 36%;
-  --primary-foreground: 210 40% 98%;
-  --muted: 210 40% 96.1%;
-  --muted-foreground: 215.4 16.3% 46.9%;
-  --border: 214.3 31.8% 91.4%;
-  --ring: 221 100% 36%;
+  --brand: #0049B8;
+  --brand-hover: #003d99;
+  --ink: #0f172a;
+  --ink-muted: #475569;
+  --ink-subtle: #64748b;
+  --ink-faint: #94a3b8;
+  --bg: #ffffff;
+  --bg-muted: #f6f7f8;
+  --bg-subtle: #f0f2f5;
+  --border: #e8eaed;
+  --border-light: #f0f2f5;
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.03);
+  --shadow-card-hover: 0 4px 20px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
+  --radius-card: 16px;
+  --radius-sm: 10px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--bg);
+  color: var(--ink);
+  scroll-behavior: smooth;
 }
 
 body {
-  background: hsl(var(--background));
-  color: hsl(var(--foreground));
+  background: var(--bg);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.7;
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+  letter-spacing: -0.005em;
+}
+
+::selection {
+  background: #0049B8;
+  color: white;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Smooth transitions on interactive elements */
+button, a[href] {
+  transition: opacity 0.18s ease, color 0.18s ease, background-color 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+/* Tabular number rendering */
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Premium section divider */
+.section-divider {
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--border), transparent);
+  margin: 0;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.12); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.2); }
+
+/* SSR safety net for Framer Motion */
+@keyframes ssr-reveal {
+  to {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+html:not([data-hydrated]) [style*="opacity: 0"],
+html:not([data-hydrated]) [style*="opacity:0"] {
+  animation: ssr-reveal 0s 2s forwards;
 }
 
 @keyframes float {
@@ -32,14 +100,4 @@ body {
 
 .animate-pulse-glow {
   animation: pulse-glow 3s ease-in-out infinite;
-}
-
-/* SSR safety net for Framer Motion */
-@keyframes ssr-reveal {
-  to { opacity: 1 !important; }
-}
-
-html:not([data-hydrated]) [style*="opacity: 0"],
-html:not([data-hydrated]) [style*="opacity:0"] {
-  animation: ssr-reveal 0s 2s forwards;
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import {
   ArrowLeft,
@@ -205,16 +206,20 @@ export default function CollaborationPage() {
                 marginBottom: "48px",
               }}
             >
-              <span
+              <Image
+                src="/logos/nextautomation.png"
+                alt="NextAutomation"
+                width={150}
+                height={26}
                 style={{
-                  fontSize: "14px",
-                  fontWeight: 600,
-                  color: "#0f172a",
-                  letterSpacing: "-0.01em",
+                  height: "24px",
+                  width: "auto",
+                  objectFit: "contain",
+                  display: "block",
+                  filter: "brightness(0) saturate(100%)",
                 }}
-              >
-                NextAutomation
-              </span>
+                priority
+              />
               <span
                 style={{
                   width: "1px",

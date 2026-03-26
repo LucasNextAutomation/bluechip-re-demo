@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 
@@ -280,34 +281,23 @@ export default function Navbar() {
           ))}
         </nav>
 
-        {/* Right: NextAutomation pill */}
-        <span
+        {/* Right: NextAutomation logo */}
+        <Image
+          src="/logos/nextautomation.png"
+          alt="NextAutomation"
+          width={120}
+          height={20}
           style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "6px",
-            fontSize: "11.5px",
-            fontWeight: "600",
-            color: "#0049B8",
-            letterSpacing: "0.03em",
+            height: "18px",
+            width: "auto",
+            objectFit: "contain",
+            display: "block",
+            filter: "brightness(0) saturate(100%)",
+            opacity: 0.35,
             flexShrink: 0,
-            background: "rgba(0,73,184,0.06)",
-            border: "1px solid rgba(0,73,184,0.18)",
-            padding: "5px 14px",
-            borderRadius: "100px",
           }}
-        >
-          <span
-            style={{
-              width: "5px",
-              height: "5px",
-              borderRadius: "9999px",
-              backgroundColor: "#0049B8",
-              flexShrink: 0,
-            }}
-          />
-          NextAutomation
-        </span>
+          priority
+        />
       </div>
 
       {/* Mobile toggle */}
