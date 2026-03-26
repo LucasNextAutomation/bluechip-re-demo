@@ -9,7 +9,6 @@ import {
   Radar
 } from "lucide-react"
 import { mockDeals, dashboardStats, type Deal } from "@/data/deals"
-import Navbar from "@/components/Navbar"
 import DealSlideout from "@/components/DealSlideout"
 import Footer from "@/components/Footer"
 
@@ -151,8 +150,6 @@ export default function DealFinderPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <Navbar />
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         {/* Top Bar */}
         <div className="flex items-center justify-between mb-8">

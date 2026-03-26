@@ -9,7 +9,6 @@ import {
   Send, MousePointerClick
 } from "lucide-react"
 import { outreachLeads, emailSequence, outreachStats, type OutreachLead, type PipelineStage } from "@/data/outreach"
-import Navbar from "@/components/Navbar"
 import Footer from "@/components/Footer"
 
 function ScoreBadge({ score }: { score: number }) {
@@ -35,8 +34,6 @@ export default function OutreachPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <Navbar />
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         <div className="flex items-center justify-between mb-8">
           <div>

@@ -20,6 +20,7 @@ function BCRALogo({ className }: { className?: string }) {
 const systems = [
   {
     href: "/deal-finder",
+    howItWorksHref: "/deal-finder/how-it-works",
     title: "Off-Market Deal Finder",
     icon: Search,
     description: "Custom data aggregator scanning 15 sources across 6 counties. AI scores every lead and surfaces the highest-priority opportunities daily.",
@@ -27,6 +28,7 @@ const systems = [
   },
   {
     href: "/underwriting",
+    howItWorksHref: "/underwriting/how-it-works",
     title: "AI Underwriting Assistant",
     icon: FileSpreadsheet,
     description: "Upload an offering memorandum. AI extracts every number, populates your model, and flags assumptions it's not confident about.",
@@ -34,6 +36,7 @@ const systems = [
   },
   {
     href: "/outreach",
+    howItWorksHref: "/outreach/how-it-works",
     title: "Automated Outreach Engine",
     icon: Zap,
     description: "Skip trace owners, send personalized sequences, and track every touchpoint — 4-touch over 14 days, fully automated from your pipeline.",
@@ -129,32 +132,63 @@ export default function LandingPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.45 + 0.08 * i }}
               >
-                <Link href={sys.href} className="block group h-full">
-                  <div className="relative h-full bg-white border border-gray-200 rounded-2xl p-6 transition-all duration-300 hover:border-[#0049B8]/40 hover:shadow-lg hover:-translate-y-0.5">
-                    <div className="w-10 h-10 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-center mb-5 group-hover:bg-[#0049B8]/5 group-hover:border-[#0049B8]/20 transition-colors">
-                      <sys.icon className="w-5 h-5 text-gray-400 group-hover:text-[#0049B8] transition-colors" />
-                    </div>
-
-                    <h3 className="text-base font-semibold text-gray-900 mb-2">{sys.title}</h3>
-                    <p className="text-sm text-gray-500 leading-relaxed mb-5">{sys.description}</p>
-
-                    <div className="space-y-2 mb-6">
-                      {sys.highlights.map((h, j) => (
-                        <div key={j} className="flex items-center gap-2 text-sm">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-[#0049B8]/60 flex-shrink-0" />
-                          <span className="text-gray-600">{h}</span>
-                        </div>
-                      ))}
-                    </div>
-
-                    <div className="flex items-center gap-1.5 text-sm font-medium text-[#0049B8] group-hover:gap-2.5 transition-all mt-auto">
-                      View Demo <ArrowRight className="w-3.5 h-3.5" />
-                    </div>
+                <div className="relative h-full bg-white border border-gray-200 rounded-2xl p-6 transition-all duration-300 hover:border-[#0049B8]/40 hover:shadow-lg hover:-translate-y-0.5">
+                  <div className="w-10 h-10 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-center mb-5">
+                    <sys.icon className="w-5 h-5 text-gray-400" />
                   </div>
-                </Link>
+
+                  <h3 className="text-base font-semibold text-gray-900 mb-2">{sys.title}</h3>
+                  <p className="text-sm text-gray-500 leading-relaxed mb-5">{sys.description}</p>
+
+                  <div className="space-y-2 mb-6">
+                    {sys.highlights.map((h, j) => (
+                      <div key={j} className="flex items-center gap-2 text-sm">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-[#0049B8]/60 flex-shrink-0" />
+                        <span className="text-gray-600">{h}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="flex items-center gap-4 mt-auto">
+                    <Link href={sys.href} className="flex items-center gap-1.5 text-sm font-medium text-[#0049B8] hover:gap-2.5 transition-all">
+                      Live Demo <ArrowRight className="w-3.5 h-3.5" />
+                    </Link>
+                    <Link href={sys.howItWorksHref} className="text-sm font-medium text-gray-400 hover:text-gray-700 transition-colors">
+                      How It Works
+                    </Link>
+                  </div>
+                </div>
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Collaboration CTA */}
+      <section className="py-20 md:py-28 border-t border-gray-100">
+        <div className="max-w-3xl mx-auto px-6 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            <p className="text-xs uppercase tracking-[0.2em] text-gray-400 font-medium mb-6">
+              Next Steps
+            </p>
+            <h2 className="text-2xl md:text-3xl font-semibold text-gray-900 mb-4 tracking-tight">
+              Ready to Build Your System?
+            </h2>
+            <p className="text-base text-gray-500 mb-8 max-w-lg mx-auto leading-relaxed">
+              A structured 6-week engagement to design, build, and deploy all three systems — with your team reviewing progress every step of the way.
+            </p>
+            <Link
+              href="/collaboration"
+              className="inline-flex items-center gap-2 bg-[#0049B8] text-white text-sm font-semibold px-7 py-3.5 rounded-xl hover:bg-[#003d99] transition-colors"
+            >
+              View Collaboration Framework <ArrowRight className="w-4 h-4" />
+            </Link>
+          </motion.div>
         </div>
       </section>
 
